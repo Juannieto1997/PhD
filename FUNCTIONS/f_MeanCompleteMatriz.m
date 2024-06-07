@@ -78,12 +78,13 @@ end
         [~,s_IndxCell] = find(strcmp(cll_ChannOrder,str_currChannel)==1);
         s_CorresPlot = v_ChanIndx(s_IndxCell);
         try
-        plot(a_plots(s_CorresPlot),v_time,m_CurrData','Color',[0 53 85]/255,v_time,mean(m_CurrData),'Color',[0 0 0],'LineWidth',1);
-        %plot(a_plots(s_CorresPlot),v_time,mean(m_CurrData),'Color',[95 15 64]/255,'LineWidth',1);
+        %plot(a_plots(s_CorresPlot),v_time,m_CurrData','Color',[0 53 85]/255,v_time,mean(m_CurrData),'Color',[0 0 0],'LineWidth',1);
+        plot(a_plots(s_CorresPlot),v_time,mean(m_CurrData),'Color',[95 15 64]/255,'LineWidth',1);
         catch
             continue
         end
-        set(a_plots(s_CorresPlot),'YLim',v_Lims)
+        %set(a_plots(s_CorresPlot),'YLim',v_Lims)
+        set(a_plots(s_CorresPlot),'YLim',v_Lims,'XLim',[0 1000])
 
         set(a_plots(s_CorresPlot),'NextPlot','add')
         set(a_plots(s_CorresPlot),'xtick',[],'ytick',[])

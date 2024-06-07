@@ -41,20 +41,26 @@ for idx = 1:length(c_Files)
         %     continue 
         % end 
         % plot the data 
+        try
         plot(v_time,m_data,'Color',[95 15 64]/255);
         hold on 
         plot(v_time,v_mean,'k','LineWidth',1);
+        catch 
+            continue 
+        end 
         % add title and labels 
         ylabel('Amplitude (mV)');
         xlabel('Time (ms)')
         legend({'Raw','Average'})
         ylim([-40 90])
-        xlim([-0 60])
+        xlim([-0 200])
         title(strtitle)
         %str_saveName = fullfile (str_saveFolder,strcat(strtitle,'.fig'));
         %savefig(str_saveName)
-        str_saveName = fullfile (str_saveFolder,strcat(strtitle,'.svg'));
-        print(gcf,'-vector','-dsvg',str_saveName)
+        % str_saveName = fullfile (str_saveFolder,strcat(strtitle,'.svg'));
+        % print(gcf,'-vector','-dsvg',str_saveName)
+        str_saveName = fullfile (str_saveFolder,strcat(strtitle,'.png'));
+        saveas(gcf,str_saveName)
         close all
     end
 end 

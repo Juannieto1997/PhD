@@ -10,7 +10,7 @@
 %% Clear workspace 
 clc; close all; clear; 
 % Add functions to workspace 
-addpath('C:\Users\Juan\Documents\CODES\FUNCTIONS')
+addpath('C:\Users\Juan\Documents\GitHub\PhD\FUNCTIONS')
 % Select folder using explorer
 [str_path]=uigetdir("D:");
 %Initialize Extension variables 
@@ -19,8 +19,8 @@ str_saveExt = 'eFP.mat'; % Extension to save the files
 %Get files with the proper extension 
 [c_Files] = f_SearchFiles (str_path,str_ext);
 %% Initialize variables 
-s_StimTime = 10; % time for the artifact in miliseconds 
-s_peakTime = 20; % Aproximate time of the maximal response in ms 
+s_StimTime = 20; % time for the artifact in miliseconds 
+s_peakTime = 45; % Aproximate time of the maximal response in ms 
 v_BaselineTime = [2 5]; % time of for the baseline in ms 
 %% Check all the fiile sin the struct 
 for idxFile = 1:length(c_Files)
@@ -34,6 +34,7 @@ for idxFile = 1:length(c_Files)
     str_saveName = strcat(str_saveName{1},str_saveExt); % Name of the file to save 
     str_fileName = fullfile(str_folder,str_fileName); %complete name to load
     str_saveName = fullfile(str_folder,str_saveName); %complete name to store 
+    str_saveName = split(str_saveName,'_');
     %% Load Files 
     fprintf('Loading Files \n')
     load(str_fileName); 
@@ -46,12 +47,22 @@ for idxFile = 1:length(c_Files)
     for idxChannel = 1:length(st_header.ChannOrder)
         %% Get all the variables related to the channel 
         m_Data = c_cut{idxChannel,1}; % Currenet Channel data
-        v_mean = mean(m_Data); % Average of all the channels
+        if size(m_Data,1) <= 1
+            continue
+        else 
+            v_mean = mean(m_Data); % Average of all the channels
+        end 
         % Find the estimated time of the eFP
         [s_eFPTime,~, ~,~,~,~,~]= f_FindParams(v_mean,v_time,v_BaselineTime,s_StimTime,s_peakTime);
         % Find the data for all the events on the channel
         [v_eFPTime,v_eFPAmp, v_delay,v_beg,v_end,v_Duration,v_Slope]= f_FindParamsMat (m_Data,v_time,v_BaselineTime,s_StimTime,s_eFPTime);
-    end 
+        % save Values 
+        str_channel = st_header.ChannOrder{idxChannel};
+        str_channel = split(str_channel,'_');
+        str_channel = str_channel{2};
+        str_temp = strcat(str_saveName{1},'_',str_saveName{2},str_channel,'.mat');
+        save(str_temp,'v_Slope','v_Duration','v_end','v_beg',"v_delay","v_eFPAmp","v_eFPTime")
+    end
 %% TODO: Store Values 
 end 
 

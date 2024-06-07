@@ -8,7 +8,7 @@ clc;close all; clear;
 addpath("C:\Users\Juan\Documents\CODES\FUNCTIONS")
 %% Initialize Variables
 % Select folder using explorer
-[str_path]=uigetdir("D:\Data");
+[str_path]=uigetdir("D:\Data"); 
 % get all folders ending with ".RAW"
 [c_Files] = f_SearchFiles (str_path,'.raw');
 % Extention to save new file 
