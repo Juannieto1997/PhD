@@ -5,7 +5,7 @@ for i = 1:144
     a_plots(i)=subplot(12,12,i);
 end
 v_time = [1:length(m_Data{1,1})];
-
+%v_time = [0:length(m_Data)-1];
 set(f,'Position',[1 1 1536 791])
 set(f,'Color',[1,1,1])
 % Resize and relocate plots
@@ -75,17 +75,18 @@ end
         str_currChannel = split(str_currChannel,'_'); 
         str_currChannel= str_currChannel{2};
         m_CurrData = m_Data{idxChan,1};  
+        %m_CurrData= m_Data(idxChan,:);
         [~,s_IndxCell] = find(strcmp(cll_ChannOrder,str_currChannel)==1);
         s_CorresPlot = v_ChanIndx(s_IndxCell);
         try
         %plot(a_plots(s_CorresPlot),v_time,m_CurrData','Color',[0 53 85]/255,v_time,mean(m_CurrData),'Color',[0 0 0],'LineWidth',1);
-        plot(a_plots(s_CorresPlot),v_time,mean(m_CurrData),'Color',[95 15 64]/255,'LineWidth',1);
+        plot(a_plots(s_CorresPlot),v_time,mean(m_CurrData)-mean(mean(m_CurrData)),'Color',[95 15 64]/255,'LineWidth',1);
+        %plot(a_plots(s_CorresPlot),v_time,m_CurrData,'Color',[95 15 64]/255,'LineWidth',1);
         catch
             continue
         end
-        %set(a_plots(s_CorresPlot),'YLim',v_Lims)
-        set(a_plots(s_CorresPlot),'YLim',v_Lims,'XLim',[0 1000])
-
+        set(a_plots(s_CorresPlot),'YLim',v_Lims)
+        
         set(a_plots(s_CorresPlot),'NextPlot','add')
         set(a_plots(s_CorresPlot),'xtick',[],'ytick',[])
         v_Pos = a_plots(s_CorresPlot).Position;
@@ -95,7 +96,8 @@ end
             'LineStyle','none');
     end
     linkaxes(a_plots,'xy')
-    str_savepath = fullfile(str_savepath,strcat(str_slice,'.svg'));
-    print(gcf,'-vector','-dsvg',str_savepath)
+    str_savepath1 = fullfile(str_savepath,strcat(str_slice,'.svg'));
+    print(gcf,'-vector','-dsvg',str_savepath1)
+    str_savepath2 = fullfile(str_savepath,strcat(str_slice,'.png'));
+    saveas(gcf,str_savepath2)
 end
-

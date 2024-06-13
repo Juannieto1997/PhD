@@ -50,7 +50,7 @@ v_Filter = v_FFTfilt (v_data,s_SampRate,v_FiltFreq);
 % apply a cuadratic function to the difference 
 v_cuad = v_Filter.^2;
 % calculate standard deviation 
-s_STD = std(v_cuad)*10;
+s_STD = std(v_cuad)*3;
 % calculate mean deviation 
 s_mean = mean(mean(v_cuad));
 %% Peak detection 
