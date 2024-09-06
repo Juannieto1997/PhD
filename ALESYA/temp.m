@@ -1,7 +1,7 @@
 %% clear workspace 
 clc;close all;clear;
 %% read data
-strName = 'H:\Data\ALESYA\3Brain\20240502d1S1_04.brw';
+strName = 'E:\Data\ALESYA\3Brain\20240502d1S1_02.brw';
 h5disp(strName)
 
 
@@ -20,13 +20,13 @@ s_len = length(v_data)/s_NoChannels;
 v_time = [0:s_len-1]/s_SRate;
 
 m_Data = reshape(v_data,[s_NoChannels,s_len]);
-v_keep = (v_time>180);
-v_keep2 = v_time<240;
+v_keep = (v_time>40);
+v_keep2 = v_time<100;
 v_keep = logical(v_keep .* v_keep2);
 m_Data = m_Data(:,v_keep);
-
+%%
 v_Row = [10:2:40];
-v_Col = [54];
+v_Col = [54:2:64];
 
 v_r = linspace(0,0,length(v_Col));
 v_g = linspace(0,0,length(v_Col));
@@ -58,7 +58,7 @@ v_chan = m_Data(s_idx,:);
 v_correctedData = s_AnaMin + double(v_chan) .* ((s_AnaMax-s_AnaMin) ./ (s_DigMax-s_DigMin));
 plot(v_time, v_correctedData)
 
-
+% 
 % for idx = 1:length(a)
 % plot(v_time, v_correctedData(idx,:),'Color',m_Color(:,idx))
 % hold on 

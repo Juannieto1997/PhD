@@ -5,7 +5,7 @@
 %clear workspace
 clc;close all; clear; 
 %add functions folder to workspace 
-addpath("C:\Users\Juan\Documents\CODES\FUNCTIONS")
+addpath('C:\Users\Juan\Documents\GitHub\PhD\FUNCTIONS')
 %% Initialize Variables
 % Select folder using explorer
 [str_path]=uigetdir("D:\Data"); 

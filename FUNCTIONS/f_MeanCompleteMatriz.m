@@ -96,8 +96,8 @@ end
             'LineStyle','none');
     end
     linkaxes(a_plots,'xy')
-    str_savepath1 = fullfile(str_savepath,strcat(str_slice,'.svg'));
-    print(gcf,'-vector','-dsvg',str_savepath1)
+    % str_savepath1 = fullfile(str_savepath,strcat(str_slice,'.svg'));
+    % print(gcf,'-vector','-dsvg',str_savepath1)
     str_savepath2 = fullfile(str_savepath,strcat(str_slice,'.png'));
     saveas(gcf,str_savepath2)
 end

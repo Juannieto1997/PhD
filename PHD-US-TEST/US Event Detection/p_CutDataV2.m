@@ -2,7 +2,7 @@
 % code to find the peaks of the Ultrasound an electrical stimulation then
 % cut the data into segments for análisis. 
 %% Initialize Variables
-addpath 'C:\Users\Juan\Documents\CODES\FUNCTIONS'
+addpath 'C:\Users\Juan\Documents\GitHub\PhD\FUNCTIONS'
 % Variables for files
 % Select folder using explorer
 [str_path]=uigetdir("D:");
@@ -21,7 +21,7 @@ v_cutl = [0.01 0.25];
 s_IPI = 15; % Seconds 
 % Parameters for peak detection 
 v_FiltFreq = [100 4000]; % Frequency to filter for peak detection
-s_int = 100;  % Window size to validate the peaks 
+s_int = 1000;  % Window size to validate the peaks 
 s_int2 = 500; 
 s_PeakDistance = 5; % Minimum distance in seconds between peaks
 %% Check all the files in the folder 
@@ -61,40 +61,44 @@ for idx = 1:length(c_Files)
     s_NP = round((s_size(2)/s_SRate)/s_IPI);
    % Select a channel to perform the peak detection 
    fprintf ('Selecting a channel for the peak detection, this really takes a long time ...  \n I hope it is workth the wait, I mean according to math it should \n')
-   [~,I]= max(max(m_data'));
+   [~,I]= maxk(max(m_data'),5);
    fprintf('OMG, cutting the channel also takes a while, I really hope this takes minutes of the code... \n')
-   v_DetetChan = m_data(I,:);
+   v_DetetChan = m_data(I(end),:);
    fprintf('Should be done now \n')
    % Peak detection in the channel with the most activity.
-   v_peaks = f_detectPeaks(v_DetetChan,s_SRate,v_FiltFreq,s_int,s_PeakDistance,s_NP);
-   if b_Elec
-   else
-        v_height = v_DetetChan(v_peaks); 
-        [~,I] = max(v_height.^2);
-        I = v_peaks(I);
-        v_low = [I:-s_IPI*s_SRate:0];
-        v_hi = [I:s_IPI*s_SRate:length(v_DetetChan)];
-        v_peaks = [v_low v_hi];
-        v_locs = unique(v_peaks);
-        v_peaks = zeros(size(v_locs));
-        % peak correction
-        for idxP = 1:length(v_locs)
-            s_peak = v_locs(idxP);
-            if ((s_peak-s_int2)<0) + (s_peak+s_int2>length(v_DetetChan))
-                continue
-            end
-            v_cut = v_DetetChan(s_peak-s_int2:s_peak+s_int2);
-            % Find the first peak of the data
-            v_max = abs(v_cut);
-            [~,v_LocPeak] = max(v_max);
-            % s_LocM = mean(v_max);
-            % s_LocS = std(v_max);
-            % [~,v_LocPeak] = findpeaks(v_max,'NPeaks',1,'MinPeakHeight',s_LocM+s_LocS);
-            % Correct positon in the location vector
-            v_peaks(idxP) = v_locs(idxP) + (v_LocPeak-s_int2)+1;
-        end
-
-   end
+   try 
+       v_peaks = f_detectPeaks(v_DetetChan,s_SRate,v_FiltFreq,s_int,s_PeakDistance,s_NP);
+   catch 
+       continue 
+   end 
+   %% Peak correction for FUS 
+   % if b_Elec
+   % else
+   %      v_height = v_DetetChan(v_peaks); 
+   %      [~,I] = max(v_height.^2);
+   %      I = v_peaks(I);
+   %      v_low = [I:-s_IPI*s_SRate:0];
+   %      v_hi = [I:s_IPI*s_SRate:length(v_DetetChan)];
+   %      v_peaks = [v_low v_hi];
+   %      v_locs = unique(v_peaks);
+   %      v_peaks = zeros(size(v_locs));
+   %      % peak correction
+   %      for idxP = 1:length(v_locs)
+   %          s_peak = v_locs(idxP);
+   %          if ((s_peak-s_int2)<0) + (s_peak+s_int2>length(v_DetetChan))
+   %              continue
+   %          end
+   %          v_cut = v_DetetChan(s_peak-s_int2:s_peak+s_int2);
+   %          % Find the first peak of the data
+   %          v_max = abs(v_cut);
+   %          [~,v_LocPeak] = max(v_max);
+   %          % s_LocM = mean(v_max);
+   %          % s_LocS = std(v_max);
+   %          % [~,v_LocPeak] = findpeaks(v_max,'NPeaks',1,'MinPeakHeight',s_LocM+s_LocS);
+   %          % Correct positon in the location vector
+   %          v_peaks(idxP) = v_locs(idxP) + (v_LocPeak-s_int2)+1;
+   %      end
+   %end
    % Initialize cell to store data
    c_cut = cell(s_size(1),2);
    % Cut all the data according to the peaks found in the channel with the

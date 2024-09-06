@@ -1,0 +1,51 @@
+%% p_ScalePlot 
+% this code generates the graphs of the scale meassurements for all the
+% frequencies in any given CSV in the given format.
+% ------------ CSV Format ---------------------------
+% row 1 = Header, names of the columns
+% Column 1 = Frequency MHz to plot
+% Column 2 = Driving Voltage used for recording 
+
+%% Prepare workspace 
+clc; close all; clear;
+%% Parameters 
+% ---------------Information for the plot------------------------
+v_cols = [11]; % index of the colums to use. 
+c_names = {'Acoustic Intensity (W)'};
+
+
+% -----------------------Files location--------------------------
+% CSV file to read
+[file,location] = uigetfile('*.csv','Select CSV File');
+str_CSV = fullfile(location,file);
+str_Folder = uigetdir('.\','Select Save location'); 
+%% Load CSV and prepare data for analysis
+m_Data = readmatrix(str_CSV);
+
+v_Freq = m_Data(:,1); % Frequency tested 
+v_FreqU = unique(v_Freq);
+v_Driv = m_Data(:,2); % Driving voltage
+
+
+%% Plot the date 
+for idxCol = 1:length(v_cols)
+    
+    v_currdata = m_Data(:,v_cols(idxCol));
+
+    figure()
+    for idxF = 1:length(v_FreqU)
+        s_currFreq = v_FreqU(idxF); 
+        v_Int = v_Freq == s_currFreq; 
+        
+        v_X = v_Driv (v_Int); 
+        v_Y = v_currdata (v_Int);
+
+        plot(v_X,v_Y,'DisplayName',num2str(v_FreqU(idxF)))
+        hold on 
+    end 
+    xlabel ('Driving Voltage (mV)')
+    ylabel(c_names{idxCol})
+    legend
+    title ('circuit')
+    ylim([0 35])
+end
