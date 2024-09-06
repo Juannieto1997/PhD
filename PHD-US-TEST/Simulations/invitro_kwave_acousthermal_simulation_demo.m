@@ -4,15 +4,14 @@ close all;
 beep off;
 clc;
 
-addpath('/Users/tomaubier/Desktop/kwave_working_example/_matlab_toolboxes_/k-Wave')
-addpath('/Users/tomaubier/Desktop/kwave_working_example/_matlab_toolboxes_/dxf2binary_mask')
-dxf_domains_dir = '/Users/tomaubier/Desktop/kwave_working_example/DXF_domains/';
-
+dxf_domains_dir ='.\Domains2\'; % Data for the different medium
+addpath('C:\Users\Juan\Documents\GitHub\PhD\FUNCTIONS') % Functions folder
+addpath('C:\Users\Juan\Documents\MATLAB\k-Wave')
 % =========================================================================
 % GENERAL SIMULATION PARAMETERS
 % =========================================================================
 
-tx_freq = 2e6;              % Hz
+tx_freq = 1e6;              % Hz
 tx_emitted_ac_power = 50;   % W -> I went with a ridiculously high value just so that you can see clear temperature elevation a 1MHz
 FUS_on_time = 400e-6;       % (BHTE) set source on time -> Pulse duration [s]
 FUS_off_time = 1e-2;        % (BHTE) set source off time [s] -> Post-stim cooling simulated duration
@@ -104,12 +103,12 @@ if freefield ~= true
     alpha_power_map(coverglass_bm) = 1;             %
 
     % PDMS
-    pdms_dxf = join([dxf_domains_dir 'PDMS.dxf']);
+    pdms_dxf = join([dxf_domains_dir 'Brainslice.dxf']);
     pdms_bm = dxf2binary_mask(pdms_dxf, Nz, Nx, dz, dx, pml_size*dz + axial_tx_offset);
-    medium.sound_speed(pdms_bm) = 1054;             % [m/s]
-    medium.density(pdms_bm) = 1038;                 % [kg/m^3]
-    alpha_coeff_map(pdms_bm) = 1.907;               % [dB/(MHz^y cm)]
-    alpha_power_map(pdms_bm) = 1.46;                %
+    medium.sound_speed(pdms_bm) = 1500;             % [m/s]
+    medium.density(pdms_bm) = 1044.5;                 % [kg/m^3]
+    alpha_coeff_map(pdms_bm) = 0.104;               % [dB/(MHz^y cm)]
+    alpha_power_map(pdms_bm) = 0.104;                % [dB/(MHz^y cm)]
 end
 
 medium.alpha_mode ='stokes';
@@ -152,7 +151,7 @@ xlabel('x (radial) position [m]');
 ylabel('z (axial) position [m]');
 axis image
 
-% ---- Time array ----
+% %% ---- Time array ----
 
 if freefield == true
     CFL = 0.14;
