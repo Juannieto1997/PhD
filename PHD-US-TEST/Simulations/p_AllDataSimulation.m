@@ -3,11 +3,19 @@
 % the CSV file. 
 % Stores a .mat file with a table containing the frequency, driving
 % voltage, intensity and pressure. 
+%% General Things
+% Assuptions of the model: 
+% The aCSF has the same properties as water. 
+% perfect interface bewtween the slice and the glass 
+% the 3D peaks has no effecton the properties. 
+% the sistem is simetrical with one rotation 
+% The MEA and the slice extend infinetly 
+% all the slice is conformed by hippocampus. (properties)
 %% Prepare workspace 
 % clear workspace 
 clc; close all; clear all; beep off; 
 % Add necesary folders 
-dxf_domains_dir ='.\Domains2\'; % Data for the different medium
+dxf_domains_dir ='.\DXF_domains\'; % Data for the different medium
 addpath('C:\Users\Juan\Documents\GitHub\PhD\FUNCTIONS') % Functions folder
 addpath('C:\Users\Juan\Documents\MATLAB\k-Wave')
 %% Create constant variables 
@@ -230,4 +238,4 @@ for idx = 1:length(v_Freq)
 end 
 
 
-save(str_SaveName,'v_Freq','v_Driv','v_Inte','v_Pres')
+save(str_SaveName,'v_Freq','v_Driv','v_Inte','v_Pres','sensor_data','kgrid','tx_freq','Nz','Nx')

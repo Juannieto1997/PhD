@@ -2,6 +2,7 @@
 % code to find the peaks of the Ultrasound an electrical stimulation then
 % cut the data into segments for análisis. 
 %% Initialize Variables
+clc;close all; clear;
 addpath 'C:\Users\Juan\Documents\GitHub\PhD\FUNCTIONS'
 % Variables for files
 % Select folder using explorer

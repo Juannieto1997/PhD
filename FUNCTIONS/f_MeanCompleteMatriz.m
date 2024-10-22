@@ -80,7 +80,7 @@ end
         s_CorresPlot = v_ChanIndx(s_IndxCell);
         try
         %plot(a_plots(s_CorresPlot),v_time,m_CurrData','Color',[0 53 85]/255,v_time,mean(m_CurrData),'Color',[0 0 0],'LineWidth',1);
-        plot(a_plots(s_CorresPlot),v_time,mean(m_CurrData)-mean(mean(m_CurrData)),'Color',[95 15 64]/255,'LineWidth',1);
+        plot(a_plots(s_CorresPlot),v_time,mean(m_CurrData)-mean(mean(m_CurrData)),'Color',[95 15 64]/255,'LineWidth',3);
         %plot(a_plots(s_CorresPlot),v_time,m_CurrData,'Color',[95 15 64]/255,'LineWidth',1);
         catch
             continue
