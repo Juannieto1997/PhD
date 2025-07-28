@@ -1,0 +1,65 @@
+function [v_Slope,v_Amp,v_Dur,v_AmpAbs,v_FreqMax,v_PowMax,v_PowExp]=f_FeatExtract (m_Data,s_peak,s_SRate,s_NSTD,s_FitlFreq)
+%% f_FeatExtract 
+% Function to extract the features from MUA 
+% INPUTS: 
+%   m_Data: matrix of n x m where n is the number of peaks, and they are
+%   all aligned at a time s_peak
+%   s_peak: time is s at which the peak occour in all the events 
+%   s_SRate: Sample rate of the data 
+%   s_NSTD: Number of STD for the threshold of the event
+%   s_FitlFreq: lower cut frequency of the filter used to obtain the peaks 
+% OUTPUTS: 
+%
+% Author: Juan Nieto 
+%% Define variables
+%For the detection 
+s_peakSamp = s_peak *s_SRate+1;  %Peak location in samples 
+
+% For outputs 
+v_Slope = zeros(1,size(m_Data,1)); % Slope of the data 
+v_Amp =zeros(1,size(m_Data,1));  % Amplitude of the peak 
+v_Dur =zeros(1,size(m_Data,1)); % Evet duration 
+v_AmpAbs = zeros(1,size(m_Data,1));  % Absolute value of the amplitude 
+v_FreqMax = zeros(1,size(m_Data,1)); % Frequency of the maximal power
+v_PowMax = zeros(1,size(m_Data,1)); % Power of the maximal Frequency 
+v_PowExp = cell(1,size(m_Data,1));  % Expectral power 
+
+%% Iterate over all peaks 
+for idxPeak = 1:size(m_Data,1)
+    %% Variables for current peak 
+    v_CurrPeak = m_Data(idxPeak,:); %Current Data
+    v_CurrPeak = v_CurrPeak  - mean(v_CurrPeak ); 
+    v_Amp(idxPeak) =  v_CurrPeak(s_peakSamp); % Amplitude
+    s_Thr = mean(v_CurrPeak) + (s_NSTD*std(v_CurrPeak)); %Threshold for duration 
+    % Validate polarity 
+    if v_CurrPeak(s_peakSamp) < 0
+        v_CurrPeak = -v_CurrPeak; 
+    end 
+    %% Detect Features
+    v_AmpAbs(idxPeak) = v_CurrPeak(s_peakSamp); % Absolute Value of the amplitude. 
+    % Duration
+
+    v_pos = v_CurrPeak-s_Thr; 
+    m_cross=f_zeroCross(v_pos);
+    m_cent = m_cross-s_peakSamp; 
+    v_sum = sum(m_cent,1);
+    [~,s_idx] =min(v_sum); 
+    v_Dur(idxPeak) = (v_PosPeaks(v_Ev(1))-v_PosPeaks(v_Ev(2)))/s_SRate;
+    % Slope 
+    s_x1 = v_PosPeaks(v_Ev(1));
+    s_y1 = v_CurrPeak(s_x1);
+    s_x2 = s_peakSamp; 
+    s_y2 = v_CurrPeak(s_x2);
+    v_Slope(idxPeak) = (s_y2-s_y1)/(s_x2-s_x1);
+    
+    %PowExp 
+    v_freq = linspace(0,s_SRate,length(v_CurrPeak));
+    b_Remove = (v_freq > s_SRate/2) + (v_freq < s_FitlFreq) ;
+    v_FFT = fft(v_CurrPeak);
+    v_FFT = v_FFT(~b_Remove);
+    v_freq = v_freq(~b_Remove);
+    [~,idxF] = max(v_FFT) ;
+    v_FreqMax(idxPeak) = v_freq(idxF);
+    v_PowMax(idxPeak) = abs(v_FFT(idxF));
+    v_PowExp {idxPeak}= [v_FFT;v_freq];
+end 
